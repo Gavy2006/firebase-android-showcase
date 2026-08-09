@@ -22,9 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun SignupPage() {
+fun SignupPage(authViewModel: AuthViewModel ,navController: NavController) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -67,14 +68,17 @@ fun SignupPage() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = {  },
+            onClick = { authViewModel.signup(email , password , onSuccess = { navController.navigate("home") } ,
+                onError = { message ->
+                    println(message)
+                }) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("SignUp")
         }
 
         TextButton(
-            onClick = {  }
+            onClick = { navController.navigate("login") }
         ) {
             Text("Already have an account")
         }

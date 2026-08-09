@@ -23,9 +23,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun LoginPage() {
+fun LoginPage(authViewModel: AuthViewModel , navController: NavController) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -68,14 +69,17 @@ fun LoginPage() {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { /* Firebase Login */ },
+            onClick = { authViewModel.login(email , password , onSuccess = { navController.navigate("home") } ,
+                onError = { message ->
+                    println(message)
+                }) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
         }
 
         TextButton(
-            onClick = { /* Register */ }
+            onClick = {navController.navigate("signup") }
         ) {
             Text("Don't have an account? Register")
         }
