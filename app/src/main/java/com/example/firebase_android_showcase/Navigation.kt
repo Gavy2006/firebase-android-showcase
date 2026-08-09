@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun AppNavigation( authViewModel: AuthViewModel) {
+fun AppNavigation( authViewModel: AuthViewModel ,firestoreViewModel: FirestoreViewModel) {
 
     val navController = rememberNavController()
 
@@ -21,11 +21,15 @@ fun AppNavigation( authViewModel: AuthViewModel) {
         }
 
         composable("signup") {
-            SignupPage(authViewModel ,navController)
+            SignupPage(authViewModel ,navController , firestoreViewModel)
         }
 
         composable("home") {
             HomePage(navController)
+        }
+
+        composable("profile") {
+         ProfilePage(firestoreViewModel)
         }
     }
 }

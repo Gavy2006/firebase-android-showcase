@@ -10,25 +10,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun SignupPage(authViewModel: AuthViewModel ,navController: NavController , firestoreViewModel: FirestoreViewModel) {
+fun ProfilePage(firestoreViewModel: FirestoreViewModel) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf("") }
+    var city by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -38,18 +36,14 @@ fun SignupPage(authViewModel: AuthViewModel ,navController: NavController , fire
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text(
-            text = "Login",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Text("Create Profile")
 
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
@@ -57,40 +51,55 @@ fun SignupPage(authViewModel: AuthViewModel ,navController: NavController , fire
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password") },
+            value = age,
+            onValueChange = { age = it },
+            label = { Text("Age") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            visualTransformation = PasswordVisualTransformation()
+            singleLine = true
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = city,
+            onValueChange = { city = it },
+            label = { Text("City") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
-                authViewModel.signup(
-                    email = email,
-                    password = password,
 
-                    onSuccess = {
-                        navController.navigate("profile")
-                    },
+                val user = FirebaseAuth.getInstance().currentUser
 
-                    onError = { message ->
-                        println(message)
-                    }
-                )
+                val uid = user?.uid
+                val email = user?.email
+
+                if (uid != null && email != null) {
+
+                    firestoreViewModel.saveUser(
+                        uid,
+                        email,
+                        name,
+                        age,
+                        city,
+
+                        onSuccess = {
+                            println("Profile saved")
+                        },
+
+                        onError = { message ->
+                            println(message)
+                        }
+                    )
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("SignUp")
-        }
-
-        TextButton(
-            onClick = { navController.navigate("login") }
-        ) {
-            Text("Already have an account")
+            Text("Save Profile")
         }
     }
 }

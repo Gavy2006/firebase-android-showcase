@@ -22,9 +22,11 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             val viewModel = ViewModelProvider(this)[AuthViewModel::class.java]
+            val firestoreViewModel =
+                ViewModelProvider(this)[FirestoreViewModel::class.java]
 
             FirebaseandroidshowcaseTheme {
-                AppNavigation(viewModel)
+                AppNavigation(viewModel , firestoreViewModel)
             }
         }
     }
